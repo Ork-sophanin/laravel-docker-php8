@@ -13,7 +13,7 @@ services:
     networks:
       - app-network
   nginx:
-    image: nginx:latest
+    image: nginx:1.22.0-alpine
     container_name: app-nginx
     volumes:
       - ./source_code/:/var/www/html/
@@ -22,13 +22,13 @@ services:
       - "80:80"
     environment:
       - NGINX_SERVER_NAME=localhost
-    command: /bin/bash -c "envsubst '$$NGINX_SERVER_NAME' < /etc/nginx/conf.d/vhost.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: /bin/sh -c "envsubst '$$NGINX_SERVER_NAME' < /etc/nginx/conf.d/vhost.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     depends_on:
       - app
     networks:
       - app-network
   mysql:
-    image: mysql:latest
+    image: mysql:8.0.29
     container_name: app-db
     ports:
       - "3306:3306"
@@ -42,7 +42,7 @@ services:
     networks:
       - app-network
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin
     container_name: app-pma
     ports:
       - "9001:80"
@@ -55,3 +55,4 @@ networks:
     driver: bridge
 volumes:
   mysqldata:
+    driver: local
